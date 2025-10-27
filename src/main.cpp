@@ -7,6 +7,12 @@
 BluetoothSerial SerialBT;
 const int ledPin = 2;
 
+void checkLedStatus() {
+  int ledStatus = digitalRead(ledPin);
+  SerialBT.print("Estado do LED: ");
+  SerialBT.println(ledStatus == HIGH ? "Ligado" : "Desligado" );
+}
+
 bool setup_bluetooth()
 {
   esp_bt_controller_disable();
@@ -36,7 +42,7 @@ bool setup_bluetooth()
     return false;
   }
 
-  if (SerialBT.begin("ESP32_ROBUSTO"))
+  if (SerialBT.begin("ESP32"))
   {
     esp_bt_gap_set_scan_mode(ESP_BT_CONNECTABLE, ESP_BT_GENERAL_DISCOVERABLE);
     return true;
@@ -62,6 +68,9 @@ void processCommand(String command)
   {
     SerialBT.println("PONG");
     Serial.println("PING recebido");
+  }
+  else if (command == "STATUS"){
+    checkLedStatus();
   }
   else
   {
